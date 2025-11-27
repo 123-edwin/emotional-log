@@ -1,12 +1,8 @@
-import Layout from "./layout/Layout"
+import AppRouter from '@/router/AppRouter';
 
 function App() {
   return (
-    <Layout>
-      <div className="text-center">
-        Aquí va el calendario
-      </div>
-    </Layout>
+    <AppRouter />
   )
 }
 
