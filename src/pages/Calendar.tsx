@@ -1,8 +1,9 @@
 import { useState } from "react";
+import Modal from "@/components/Modal";
 
 const monthNames = [
-  "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
-  "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
+    "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+    "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
 ];
 
 const today = new Date();
@@ -10,6 +11,17 @@ const today = new Date();
 
 export default function Calendar() {
     const [currentDate, setCurrentDate] = useState(new Date());
+    const [selectedDay, setSelectedDay] = useState<number | null>(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const openModal = (day: number) => {
+        setSelectedDay(day);
+        setIsModalOpen(true);
+    };
+    const closeModal = () => {
+        setSelectedDay(null);
+        setIsModalOpen(false);
+    }
 
 
     const year = currentDate.getFullYear();
@@ -21,8 +33,8 @@ export default function Calendar() {
     const firstDayIndex = new Date(year, month, 1).getDay();
     // Convertir para que lunes sea el primer día
     const adjustedStart = firstDayIndex === 0 ? 6 : firstDayIndex - 1;
-    
-    const emptySlots = Array.from({length: adjustedStart});
+
+    const emptySlots = Array.from({ length: adjustedStart });
     const days = Array.from({ length: daysInMonth }, (_, i) => i + 1);
 
     //handlers
@@ -61,21 +73,43 @@ export default function Calendar() {
                     <div key={"e" + i} className="aspect-square"></div>
                 ))}
                 {days.map((day) => {
-                    const isToday = 
-                    day == today.getDate() &&
-                    month == today.getMonth() &&
-                    year == today.getFullYear();
+                    const isToday =
+                        day == today.getDate() &&
+                        month == today.getMonth() &&
+                        year == today.getFullYear();
                     return (
-                    <div
-                        key={day}
-                        className={`aspect-square flex items-center justify-center border rounded-md hover:bg-gray-100 ` + 
-                            (isToday ? `bg-blue-500 text-black` : ``)
-                        }
-                    >
-                        {day}
-                    </div>
-                )})}
+                        <div
+                            key={day}
+                            onClick={() => openModal(day)}
+                            className={[
+                                "aspect-square flex items-center justify-center border rounded-md",
+                                isToday
+                                    ? "bg-blue-500 text-black"
+                                    : "hover:bg-gray-300"
+                            ].join(" ")}
+
+                        >
+                            {day}
+                        </div>
+                    )
+                })}
             </div>
+            {/*Modal*/}
+            <Modal isOpen={isModalOpen} onClose={closeModal}>
+                <h2 className="text-xl font-semibold mb-2">
+                    Crear evento – Día {selectedDay}
+                </h2>
+
+                <input
+                    className="border p-2 rounded w-full"
+                    placeholder="Título del evento"
+                />
+
+                <button className="bg-blue-500 text-white px-4 py-2 rounded mt-3">
+                    Guardar
+                </button>
+            </Modal>
+
         </div>
     );
 };

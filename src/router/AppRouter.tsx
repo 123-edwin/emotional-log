@@ -6,7 +6,7 @@ import Calendar from '@pages/Calendar';
 export default function AppRouter() {
     return (
         <BrowserRouter>
-            <Routes>
+            <Routes>1
                 <Route element={<Layout />}>
                     <Route path='/' element={<Home />} />
                     <Route path='/calendar' element={<Calendar />} />
