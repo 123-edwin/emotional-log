@@ -105,7 +105,7 @@ export default function Calendar() {
                     placeholder="Título del evento"
                 />
 
-                <button className="bg-blue-500 text-white px-4 py-2 rounded mt-3">
+                <button className="bg-blue-500 text-white hover:bg-blue-600 px-4 py-2 rounded mt-3 mr-1">
                     Guardar
                 </button>
             </Modal>

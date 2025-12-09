@@ -12,7 +12,7 @@ export default function Modal({ isOpen, onClose, children }: ModalProps){
                 {children}
 
                 <button
-                    className="mt-4 bg-gray-200 hover:bg-gray-300 px-4 py-1 rounded"
+                    className="mt-4 bg-gray-200 hover:bg-gray-300 px-4 py-2 rounded"
                     onClick={onClose}
                 >
                     Cerrar
