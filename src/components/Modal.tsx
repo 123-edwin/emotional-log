@@ -7,15 +7,16 @@ interface ModalProps {
 }
 
 const emotionList = [
-    "Feliz",
-    "Triste",
-    "Ansioso",
-    "Motivado",
-    "Relajado",
-    "Enojado",
-    "Estresado",
-    "Agradecido"
+    { emoji: "😄", label: "Feliz" },
+    { emoji: "😢", label: "Triste" },
+    { emoji: "😰", label: "Ansioso" },
+    { emoji: "🔥", label: "Motivado" },
+    { emoji: "😌", label: "Relajado" },
+    { emoji: "😡", label: "Enojado" },
+    { emoji: "😣", label: "Estresado" },
+    { emoji: "🙏", label: "Agradecido" }
 ];
+
 
 export default function Modal({ isOpen, onClose, children }: ModalProps) {
     const [selectedEmotions, setSelectedEmotions] = useState<string[]>([]);
@@ -65,8 +66,8 @@ export default function Modal({ isOpen, onClose, children }: ModalProps) {
 
     return (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-            <div className="bg-white p-6 rounded-lg shadow-lg min-w-[350px] max-w-md">
-                
+            <div className="bg-white p-6 rounded-lg shadow-lg min-w-[350px] max-w-md max-h-[80vh] overflow-y-auto">
+
                 {/* Título dinámico: viene desde Calendar */}
                 <h2 className="text-xl font-semibold mb-3">{children}</h2>
 
@@ -75,18 +76,22 @@ export default function Modal({ isOpen, onClose, children }: ModalProps) {
                     <p className="text-sm font-medium mb-2">Selecciona tus emociones:</p>
                     <div className="grid grid-cols-2 gap-2">
                         {emotionList.map((emotion) => (
-                            <button
-                                key={emotion}
-                                onClick={() => toggleEmotion(emotion)}
-                                className={`border px-3 py-2 rounded text-sm transition 
-                                    ${selectedEmotions.includes(emotion)
-                                        ? "bg-blue-500 text-white border-blue-600"
-                                        : "hover:bg-gray-100"
-                                    }`}
-                            >
-                                {emotion}
-                            </button>
+                            <div className="flex flex-col items-center">
+                                <button
+                                    onClick={() => toggleEmotion(emotion.label)}
+                                    className={`text-3xl border rounded-full p-3 transition
+            ${selectedEmotions.includes(emotion.label)
+                                            ? "bg-blue-500 text-white border-blue-600"
+                                            : "hover:bg-gray-100"
+                                        }`}
+                                >
+                                    {emotion.emoji}
+                                </button>
+                                <p className="text-xs mt-1">{emotion.label}</p>
+                            </div>
+
                         ))}
+
                     </div>
                 </div>
 
@@ -99,7 +104,7 @@ export default function Modal({ isOpen, onClose, children }: ModalProps) {
                             {selectedEmotions.map((emotion) => (
                                 <div key={emotion}>
                                     <span className="text-sm font-medium">{emotion}</span>
-                                    
+
                                     <input
                                         type="range"
                                         min="1"
