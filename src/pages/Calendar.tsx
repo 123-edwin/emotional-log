@@ -1,5 +1,9 @@
 import { useState } from "react";
 import Modal from "@/components/Modal";
+import type { EmotionEntry } from "@/components/Modal";
+
+
+
 
 const monthNames = [
     "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
@@ -7,9 +11,13 @@ const monthNames = [
 ];
 
 const today = new Date();
+const getDateKey = (year: number, month: number, day: number) =>
+    `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+
 
 
 export default function Calendar() {
+    const [emotionsByDay, setEmotionsByDay] = useState<Record<string, EmotionEntry[]>>({});
     const [currentDate, setCurrentDate] = useState(new Date());
     const [selectedDay, setSelectedDay] = useState<number | null>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -22,6 +30,22 @@ export default function Calendar() {
         setSelectedDay(null);
         setIsModalOpen(false);
     }
+
+    const handleSaveEmotions = (data: EmotionEntry[]) => {
+        if (!selectedDay) return;
+
+        const dateKey = getDateKey(year, month, selectedDay);
+
+
+
+        setEmotionsByDay((prev) => ({
+            ...prev,
+            [dateKey]: data
+        }));
+
+        closeModal();
+    };
+
 
 
     const year = currentDate.getFullYear();
@@ -77,16 +101,21 @@ export default function Calendar() {
                         day == today.getDate() &&
                         month == today.getMonth() &&
                         year == today.getFullYear();
+
+                    const dateKey = getDateKey(year, month, day);
+                    const hasEmotions = emotionsByDay[dateKey]?.length > 0;
+
                     return (
                         <div
                             key={day}
                             onClick={() => openModal(day)}
                             className={[
-                                "aspect-square flex items-center justify-center border rounded-md",
-                                isToday
-                                    ? "bg-blue-500 text-black"
-                                    : "hover:bg-gray-300"
-                            ].join(" ")}
+                                "aspect-square flex items-center justify-center border rounded-md cursor-pointer",
+                                isToday && "bg-blue-500 text-white",
+                                hasEmotions && "border-green-500 border-2",
+                                !isToday && "hover:bg-gray-200"
+                            ].filter(Boolean).join(" ")}
+
 
                         >
                             {day}
@@ -95,20 +124,15 @@ export default function Calendar() {
                 })}
             </div>
             {/*Modal*/}
-            <Modal isOpen={isModalOpen} onClose={closeModal}>
-                <h2 className="text-xl font-semibold mb-2">
-                    Crear evento – Día {selectedDay}
-                </h2>
-
-                <input
-                    className="border p-2 rounded w-full"
-                    placeholder="Título del evento"
-                />
-
-                <button className="bg-blue-500 text-white hover:bg-blue-600 px-4 py-2 rounded mt-3 mr-1">
-                    Guardar
-                </button>
+            <Modal
+                key={selectedDay}
+                isOpen={isModalOpen}
+                onClose={closeModal}
+                onSave={handleSaveEmotions}
+            >
+                Registrar emociones – Día {selectedDay}
             </Modal>
+
 
         </div>
     );

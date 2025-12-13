@@ -1,8 +1,14 @@
 import { useState } from "react";
 
+export interface EmotionEntry {
+    emotion: string;
+    intensity: number;
+}
+
 interface ModalProps {
     isOpen: boolean;
     onClose: () => void;
+    onSave: (data: EmotionEntry[]) => void;
     children: React.ReactNode;
 }
 
@@ -18,24 +24,28 @@ const emotionList = [
 ];
 
 
-export default function Modal({ isOpen, onClose, children }: ModalProps) {
+export default function Modal({ isOpen, onClose, onSave, children }: ModalProps) {
     const [selectedEmotions, setSelectedEmotions] = useState<string[]>([]);
     const [intensities, setIntensities] = useState<Record<string, number>>({});
+
 
     if (!isOpen) return null;
 
     const toggleEmotion = (emotion: string) => {
         setSelectedEmotions((prev) => {
             if (prev.includes(emotion)) {
-                const updated = prev.filter((e) => e !== emotion);
-                const newInt = { ...intensities };
-                delete newInt[emotion];
-                setIntensities(newInt);
-                return updated;
+                setIntensities((ints) => {
+                    const copy = { ...ints };
+                    delete copy[emotion];
+                    return copy;
+                });
+                return prev.filter((e) => e !== emotion);
             }
+
             return [...prev, emotion];
         });
     };
+
 
     const updateIntensity = (emotion: string, value: number) => {
         setIntensities((prev) => ({
@@ -50,17 +60,17 @@ export default function Modal({ isOpen, onClose, children }: ModalProps) {
             return;
         }
 
-        for (const emotion of selectedEmotions) {
-            if (!intensities[emotion]) {
-                alert("Todas las emociones seleccionadas deben tener intensidad.");
-                return;
+        const data = selectedEmotions.map((emotion) => {
+            const intensity = intensities[emotion];
+            if (!intensity) {
+                alert(`Asigna intensidad a ${emotion}`);
+                throw new Error();
             }
-        }
+            return { emotion, intensity };
+        });
 
-        console.log("Guardado ✓");
-        console.log("Emociones:", selectedEmotions);
-        console.log("Intensidades:", intensities);
 
+        onSave(data);
         onClose();
     };
 
