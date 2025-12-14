@@ -9,7 +9,8 @@ interface ModalProps {
     isOpen: boolean;
     onClose: () => void;
     onSave: (data: EmotionEntry[]) => void;
-    children: React.ReactNode;
+    title: string;
+    initialEmotions?: EmotionEntry[];
 }
 
 const emotionList = [
@@ -24,12 +25,24 @@ const emotionList = [
 ];
 
 
-export default function Modal({ isOpen, onClose, onSave, children }: ModalProps) {
-    const [selectedEmotions, setSelectedEmotions] = useState<string[]>([]);
-    const [intensities, setIntensities] = useState<Record<string, number>>({});
+export default function Modal({ isOpen, onClose, onSave, title, initialEmotions }: ModalProps) {
+    const [selectedEmotions, setSelectedEmotions] = useState<string[]>(
+        initialEmotions ? initialEmotions.map(e => e.emotion) : []
+    );
+
+    const [intensities, setIntensities] = useState<Record<string, number>>(
+        initialEmotions
+            ? Object.fromEntries(
+                initialEmotions.map(e => [e.emotion, e.intensity])
+            )
+            : {}
+    );
+
+
 
 
     if (!isOpen) return null;
+
 
     const toggleEmotion = (emotion: string) => {
         setSelectedEmotions((prev) => {
@@ -79,7 +92,7 @@ export default function Modal({ isOpen, onClose, onSave, children }: ModalProps)
             <div className="bg-white p-6 rounded-lg shadow-lg min-w-[350px] max-w-md max-h-[80vh] overflow-y-auto">
 
                 {/* Título dinámico: viene desde Calendar */}
-                <h2 className="text-xl font-semibold mb-3">{children}</h2>
+                <h2 className="text-xl font-semibold mb-3">{title}</h2>
 
                 {/* Selección de emociones */}
                 <div className="mb-4">
@@ -119,7 +132,7 @@ export default function Modal({ isOpen, onClose, onSave, children }: ModalProps)
                                         type="range"
                                         min="1"
                                         max="5"
-                                        value={intensities[emotion] || 3}
+                                        value={intensities[emotion] || 1}
                                         onChange={(e) =>
                                             updateIntensity(emotion, Number(e.target.value))
                                         }

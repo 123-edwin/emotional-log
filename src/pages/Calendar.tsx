@@ -69,6 +69,12 @@ export default function Calendar() {
         setCurrentDate((prev) => new Date(prev.getFullYear(), prev.getMonth() - 1, 1));
     }
 
+    const selectedDateKey =
+        selectedDay !== null
+            ? getDateKey(year, month, selectedDay)
+            : null;
+
+
     return (
         <div className="max-w-xl mx-auto p-4">
             {/*HEADER*/}
@@ -129,8 +135,11 @@ export default function Calendar() {
                 isOpen={isModalOpen}
                 onClose={closeModal}
                 onSave={handleSaveEmotions}
+                title={`Registrar emociones – Día ${selectedDay}`}
+                initialEmotions={
+                    selectedDateKey ? emotionsByDay[selectedDateKey] : undefined
+                }
             >
-                Registrar emociones – Día {selectedDay}
             </Modal>
 
 
