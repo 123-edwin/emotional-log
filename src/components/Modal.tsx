@@ -54,6 +54,11 @@ export default function Modal({ isOpen, onClose, onSave, title, initialEmotions 
                 });
                 return prev.filter((e) => e !== emotion);
             }
+            // initialize intensity to 1
+            setIntensities((ints) => ({
+                ...ints,
+                [emotion]: 1
+            }));
 
             return [...prev, emotion];
         });
@@ -75,10 +80,11 @@ export default function Modal({ isOpen, onClose, onSave, title, initialEmotions 
 
         const data = selectedEmotions.map((emotion) => {
             const intensity = intensities[emotion];
-            if (!intensity) {
+            if (intensity === undefined) {
                 alert(`Asigna intensidad a ${emotion}`);
                 throw new Error();
             }
+
             return { emotion, intensity };
         });
 
@@ -91,10 +97,10 @@ export default function Modal({ isOpen, onClose, onSave, title, initialEmotions 
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
             <div className="bg-white p-6 rounded-lg shadow-lg min-w-[350px] max-w-md max-h-[80vh] overflow-y-auto">
 
-                {/* Título dinámico: viene desde Calendar */}
+                {/* title: from calenday */}
                 <h2 className="text-xl font-semibold mb-3">{title}</h2>
 
-                {/* Selección de emociones */}
+                {/* emotions */}
                 <div className="mb-4">
                     <p className="text-sm font-medium mb-2">Selecciona tus emociones:</p>
                     <div className="grid grid-cols-2 gap-2">
@@ -118,7 +124,7 @@ export default function Modal({ isOpen, onClose, onSave, title, initialEmotions 
                     </div>
                 </div>
 
-                {/* Sliders de intensidad */}
+                {/* Sliders */}
                 {selectedEmotions.length > 0 && (
                     <div className="mb-4">
                         <p className="text-sm font-medium mb-2">Intensidad (1 - 5):</p>
@@ -132,7 +138,7 @@ export default function Modal({ isOpen, onClose, onSave, title, initialEmotions 
                                         type="range"
                                         min="1"
                                         max="5"
-                                        value={intensities[emotion] || 1}
+                                        value={intensities[emotion]}
                                         onChange={(e) =>
                                             updateIntensity(emotion, Number(e.target.value))
                                         }
@@ -152,7 +158,7 @@ export default function Modal({ isOpen, onClose, onSave, title, initialEmotions 
                     </div>
                 )}
 
-                {/* Botones */}
+                {/* Buttons */}
                 <div className="flex justify-end mt-4">
                     <button
                         className="bg-blue-500 text-white hover:bg-blue-600 px-4 py-2 rounded mr-2"

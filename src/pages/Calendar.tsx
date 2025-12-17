@@ -2,7 +2,21 @@ import { useState } from "react";
 import Modal from "@/components/Modal";
 import type { EmotionEntry } from "@/components/Modal";
 
+//localstorage
+const STORAGE_KEY = "emotionsByDay";
 
+const loadEmotions = (): Record<string, EmotionEntry[]> => {
+    try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        return raw ? JSON.parse(raw) : {};
+    } catch {
+        return {};
+    }
+};
+
+const saveEmotions = (data: Record<string, EmotionEntry[]>) => {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+};
 
 
 const monthNames = [
@@ -17,7 +31,8 @@ const getDateKey = (year: number, month: number, day: number) =>
 
 
 export default function Calendar() {
-    const [emotionsByDay, setEmotionsByDay] = useState<Record<string, EmotionEntry[]>>({});
+    const [emotionsByDay, setEmotionsByDay] = useState<Record<string, EmotionEntry[]>>(() => loadEmotions());
+
     const [currentDate, setCurrentDate] = useState(new Date());
     const [selectedDay, setSelectedDay] = useState<number | null>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -36,15 +51,19 @@ export default function Calendar() {
 
         const dateKey = getDateKey(year, month, selectedDay);
 
+        setEmotionsByDay((prev) => {
+            const updated = {
+                ...prev,
+                [dateKey]: data
+            };
 
-
-        setEmotionsByDay((prev) => ({
-            ...prev,
-            [dateKey]: data
-        }));
+            saveEmotions(updated);
+            return updated;
+        });
 
         closeModal();
     };
+
 
 
 
@@ -53,9 +72,9 @@ export default function Calendar() {
 
     //how much days in the month
     const daysInMonth = new Date(year, month + 1, 0).getDate();
-    // Día de la semana donde empieza (0 = domingo)
+    // day week starts (0 = sunday)
     const firstDayIndex = new Date(year, month, 1).getDay();
-    // Convertir para que lunes sea el primer día
+    // monday first day
     const adjustedStart = firstDayIndex === 0 ? 6 : firstDayIndex - 1;
 
     const emptySlots = Array.from({ length: adjustedStart });
