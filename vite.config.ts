@@ -12,7 +12,9 @@ export default defineConfig({
       "@layout": path.resolve(__dirname, "./src/layout"),
       "@pages": path.resolve(__dirname, "./src/pages"),
       "@components": path.resolve(__dirname, "./src/components"),
-      "@router": path.resolve(__dirname, "./src/router")
+      "@router": path.resolve(__dirname, "./src/router"),
+      "@services": path.resolve(__dirname, "./src/services"),
+      "@utils": path.resolve(__dirname, "./src/utils")
     },
   },
 });

@@ -1,22 +1,8 @@
 import { useState } from "react";
+import { loadEmotions, saveEmotions } from "@/services/emotionStorage";
+import { getDateKey } from "@/utils/date";
 import Modal from "@/components/Modal";
 import type { EmotionEntry } from "@/components/Modal";
-
-//localstorage
-const STORAGE_KEY = "emotionsByDay";
-
-const loadEmotions = (): Record<string, EmotionEntry[]> => {
-    try {
-        const raw = localStorage.getItem(STORAGE_KEY);
-        return raw ? JSON.parse(raw) : {};
-    } catch {
-        return {};
-    }
-};
-
-const saveEmotions = (data: Record<string, EmotionEntry[]>) => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-};
 
 
 const monthNames = [
@@ -25,10 +11,6 @@ const monthNames = [
 ];
 
 const today = new Date();
-const getDateKey = (year: number, month: number, day: number) =>
-    `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
-
-
 
 export default function Calendar() {
     const [emotionsByDay, setEmotionsByDay] = useState<Record<string, EmotionEntry[]>>(() => loadEmotions());
