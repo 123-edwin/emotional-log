@@ -1,9 +1,7 @@
 import { useState } from "react";
+import type { EmotionEntry } from "@/domain/emotion";
+import { buildDraftFromInitial, type DraftEmotions } from "@/services/emotions";
 
-export interface EmotionEntry {
-    emotion: string;
-    intensity: number;
-}
 
 interface ModalProps {
     isOpen: boolean;
@@ -23,17 +21,6 @@ const emotionList = [
     { emoji: "😣", label: "Estresado" },
     { emoji: "🙏", label: "Agradecido" }
 ];
-
-type DraftEmotions = Record<string, number>;
-
-const buildDraftFromInitial = (
-    initial?: EmotionEntry[]
-): DraftEmotions => {
-    if (!initial) return {};
-    return Object.fromEntries(
-        initial.map(e => [e.emotion, e.intensity])
-    );
-};
 
 export default function Modal({ isOpen, onClose, onSave, title, initialEmotions }: ModalProps) {
     const [draft, setDraft] = useState<DraftEmotions>(buildDraftFromInitial(initialEmotions));

@@ -14,7 +14,8 @@
       "@components/*": ["src/components/*"],
       "@router/*": ["src/router/*"],
       "@services/*": ["src/services/*"],
-      "@utils/*": ["src/utils/*"]
+      "@utils/*": ["src/utils/*"],
+      "@domain/*": ["src/domain/*"]
     },
     "skipLibCheck": true,
 

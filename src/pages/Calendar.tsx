@@ -2,7 +2,7 @@ import { useState } from "react";
 import { loadEmotions, saveEmotions } from "@/services/emotionStorage";
 import { getDateKey } from "@/utils/date";
 import Modal from "@/components/Modal";
-import type { EmotionEntry } from "@/components/Modal";
+import type { EmotionEntry } from "@/domain/emotion";
 
 
 const monthNames = [
